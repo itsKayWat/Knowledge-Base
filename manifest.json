@@ -1,0 +1,34 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+  "manifest_version": 3,
+  "name": "Knowledge Base",
+  "version": "1.0.0",
+  "description": "Organize your information with a personal knowledge base. Create collections and access content in your browser.",
+  "icons": {
+    "16": "src/images/icon16.png",
+    "48": "src/images/icon48.png", 
+    "128": "src/images/icon128.png"
+  },
+  "action": {
+    "default_title": "Knowledge Base",
+    "default_icon": {
+      "16": "src/images/icon16.png",
+      "48": "src/images/icon48.png",
+      "128": "src/images/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/js/background.js"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [{
+    "resources": ["src/index.html", "src/js/*", "src/css/*", "src/images/*", "src/storage/**"],
+    "matches": ["<all_urls>"]
+  }]
+} 
