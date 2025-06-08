@@ -1,0 +1,32 @@
+modules = ["nodejs-20", "web"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Run Knowledge Base"
+
+[[workflows.workflow]]
+name = "Run Knowledge Base"
+author = 39084356
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd src && node server.js"
+
+[[workflows.workflow]]
+name = "Run with Node"
+author = 39084356
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd src && node server.js"
+
+[deployment]
+run = ["sh", "-c", "cd src && python -m http.server 5000 --bind 0.0.0.0"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80

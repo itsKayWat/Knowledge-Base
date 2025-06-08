@@ -1,0 +1,2939 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Removing the CSP meta tag for development -->
+    <title>Knowledge Base</title>
+    <!-- Include external CSS files -->
+    <link rel="stylesheet" href="css/filters.css">
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            /* Dark theme variables */
+            --primary-color: #64c5ff;
+            --primary-light: #8ad3ff;
+            --primary-dark: #28a2f5;
+            --accent-color: #ff9744;
+            --accent-hover: #e68a3d;
+            --accent-color-rgb: 255, 151, 68;
+            --background-color: #121212;
+            --sidebar-bg: #1e1e1e;
+            --card-color: #1e1e1e;
+            --text-color: #f1f1f1;
+            --text-primary: #f1f1f1;
+            --text-secondary: #8d8d95;
+            --border-color: #383838;
+            --nav-selected-bg: #2a2a2a;
+            --hover-bg: rgba(255, 255, 255, 0.05);
+            --active-bg: rgba(100, 197, 255, 0.1);
+            --hover-color: #2a2a2a;
+            --purple-brand: #9146FF;
+            --button-blue: #2563eb;
+            --success-green: #50c878;
+            --link-blue: #0066ff;
+
+            /* Light theme variables for future use */
+            --light-primary: #4674e7;
+            --light-background: #f9f9f9;
+            --light-sidebar: #ffffff;
+            --light-card: #ffffff;
+            --light-text: #333333;
+            --light-text-secondary: #71767c;
+            --light-border: #dddddd;
+            
+            /* Shared variables */
+            --header-height: 56px;
+            --sidebar-width: 270px;
+            --icon-sidebar-width: 60px;
+            --border-radius: 8px;
+            --sidebar-icon-size: 24px;
+            --topbar-icon-size: 20px;
+            --transition-normal: 0.3s ease;
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* Hide scrollbars but allow scrolling */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Layout Structure */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            margin-left: 0;
+        }
+
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            height: var(--header-height);
+            background-color: var(--card-color);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .hamburger-menu {
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 24px;
+            background-color: var(--border-color);
+            margin: 0 15px;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-right: auto;
+            width: 220px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 7px 15px 7px 32px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            background-color: rgba(255, 255, 255, 0.06);
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .topbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-right: 10px;
+        }
+
+        .topbar-icon {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .topbar-icon:hover {
+            color: var(--text-color);
+        }
+
+        .topbar-icon.active {
+            color: var(--text-color);
+            background-color: var(--nav-selected-bg);
+        }
+
+        .notification-icon, .profile-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: transparent;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .notification-icon:hover, .profile-icon:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
+
+        /* Workspace Selection Styling */
+        .workspace-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .workspace-select {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .selected-workspace {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .selected-workspace-name {
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .workspace-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .dropdown-icon {
+            color: var(--text-secondary);
+            margin-left: 5px;
+        }
+
+        /* KB URL Display */
+        .kb-url-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .url-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .url-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .url-icon {
+            color: var(--link-blue);
+        }
+
+        .url-text {
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .hidden-section {
+            display: flex;
+            gap: 4px;
+        }
+
+        .round-button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .round-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .switch-wrapper {
+            margin-left: 8px;
+        }
+
+        .ant-switch {
+            position: relative;
+            display: inline-block;
+            box-sizing: border-box;
+            width: 44px;
+            height: 22px;
+            border-radius: 11px;
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ant-switch-checked {
+            background-color: var(--link-blue);
+        }
+
+        .ant-switch-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: white;
+            transition: all 0.2s;
+        }
+
+        .ant-switch-checked .ant-switch-handle {
+            left: 24px;
+        }
+
+        /* Icon Sidebar */
+        .icon-sidebar {
+            width: var(--icon-sidebar-width);
+            min-width: var(--icon-sidebar-width);
+            height: 100vh;
+            background-color: #121212;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0 15px 0;
+            position: relative;
+        }
+
+        .icon-sidebar-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .icon-sidebar .brand-logo {
+            margin-top: -3px;
+            margin-bottom: 16px;
+            width: 46px;
+            height: 46px;
+            background-color: transparent;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .icon-sidebar-bottom {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .sidebar-divider {
+            width: 40px;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 10px 0;
+        }
+
+        .days-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(to top, #328dff 0%, #9dceff 100%);
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .days-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .icon-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .icon-link:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
+
+        .icon-link.active {
+            background-color: var(--nav-selected-bg);
+            color: var(--text-color);
+        }
+
+        .icon-link .badge {
+            position: absolute;
+            top: 0;
+            right: 6px;
+            background-color: #f43f5e;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .days-badge {
+            width: 36px;
+            height: 36px;
+            background-color: #1e293b;
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .label-text {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        /* Main Sidebar */
+        aside.sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            height: 100%;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sidebar-nav {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filters-heading {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 12px 20px 8px;
+            font-weight: 500;
+        }
+
+        /* Sidebar navigation items styles */
+        .filter-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            color: var(--text-secondary);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .filter-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+        
+        .filter-item.active {
+            background-color: var(--active-bg);
+            color: var(--text-primary);
+        }
+        
+        .add-to-filter {
+            margin-left: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .filter-item:hover .add-to-filter {
+            opacity: 1;
+        }
+        
+        .add-to-filter:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        .nav-title {
+            font-size: 14px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .days-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .days-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #1e293b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .setup-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .kb-id {
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .filters-container {
+            margin-bottom: 20px;
+        }
+
+        .search-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-actions .search-input {
+            width: 320px;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-add svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .filters-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .filter-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .content-table th {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 14px;
+            background-color: var(--background-color);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .content-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Category Row Styling */
+        .category-row {
+            background-color: rgba(255, 255, 255, 0.03) !important;
+            border-left: 3px solid transparent;
+            transition: background-color 0.2s ease, border-left 0.2s ease;
+            position: relative;
+        }
+
+        .category-row:hover {
+            background-color: rgba(255, 255, 255, 0.06) !important;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .category-row .category-icon {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+        }
+
+        .category-row .expandable-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .category-row .expand-icon {
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        .category-row .expand-icon.open {
+            transform: rotate(90deg);
+        }
+
+        .category-row .folder-icon {
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-row .category-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .category-row .category-name {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .category-row .article-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .category-row .tree-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-left: auto;
+            padding-right: 10px;
+        }
+
+        .category-row:hover .tree-actions {
+            opacity: 1;
+        }
+
+        .category-row .tree-action-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .category-row .tree-action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+        
+        /* Folder row styling */
+        .folder-row {
+            background-color: rgba(80, 100, 155, 0.05) !important;
+            border-left: 3px solid transparent;
+            transition: background-color 0.2s ease, border-left 0.2s ease;
+            position: relative;
+        }
+        
+        .folder-row:hover {
+            background-color: rgba(80, 100, 155, 0.1) !important;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        /* Folder-specific icon styling */
+        .folder-row .folder-icon {
+            color: var(--accent-color);
+        }
+        
+        .folder-row .tree-action-btn:hover {
+            background-color: rgba(80, 100, 155, 0.15);
+            color: var(--accent-color);
+        }
+        
+        /* Article Row Styling */
+        .article-row {
+            background-color: transparent;
+            transition: background-color 0.2s ease, border-left 0.2s ease;
+            border-left: 3px solid transparent;
+            padding-left: 44px; /* Indent to align with category content */
+        }
+
+        .article-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        /* File Row Styling */
+        .file-row {
+            background-color: rgba(147, 112, 219, 0.03);
+            transition: background-color 0.2s ease, border-left 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .file-row:hover {
+            background-color: rgba(147, 112, 219, 0.09);
+            border-left: 3px solid #9370db;
+        }
+        
+        /* Make file icon purple */
+        .file-row .file-icon svg {
+            stroke: #9370db;
+        }
+
+        .article-row.selected {
+            background-color: rgba(100, 197, 255, 0.08);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .article-row.selected .article-title {
+            font-weight: 500;
+        }
+
+        /* Nested Content Styling */
+        .nested-content {
+            margin-left: 24px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        /* Tree Indentation */
+        [data-indent="1"] { padding-left: 24px; }
+        [data-indent="2"] { padding-left: 48px; }
+        [data-indent="3"] { padding-left: 72px; }
+        [data-indent="4"] { padding-left: 96px; }
+        [data-indent="5"] { padding-left: 120px; }
+
+        /* Status Tags */
+        .status-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-tag.published {
+            background-color: rgba(80, 200, 120, 0.2);
+            color: #50c878;
+        }
+
+        .status-tag.draft {
+            background-color: rgba(255, 151, 68, 0.2);
+            color: #ff9744;
+        }
+
+        /* Performance Stats */
+        .performance-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* Selected article row styling */
+        .article-row.selected {
+            background-color: rgba(100, 197, 255, 0.08);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .article-row.selected .article-title {
+            font-weight: 500;
+        }
+
+        /* Book Row Styling */
+        .book-row {
+            cursor: pointer;
+            background-color: var(--card-color);
+            border-left: 3px solid transparent;
+            transition: background-color 0.2s ease, border-left 0.2s ease;
+        }
+        
+        /* Top-level Category Styling */
+        .category-row[data-book-id] {
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid transparent;
+            transition: background-color 0.2s ease, border-left 0.2s ease;
+        }
+        
+        .category-row[data-book-id]:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .book-row:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .book-container {
+            padding: 5px 10px;
+        }
+
+        .book-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .book-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .book-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Parent-child relationship styling */
+        .book-content {
+            padding-left: 20px;
+        }
+
+        /* Status tags */
+        .status-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-tag.published {
+            background-color: rgba(80, 200, 120, 0.2);
+            color: #50c878;
+        }
+
+        .status-tag.draft {
+            background-color: rgba(255, 151, 68, 0.2);
+            color: #ff9744;
+        }
+
+        .tree-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tree-action-btn {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tree-action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .drag-handle {
+            color: var(--text-secondary);
+            cursor: grab;
+            margin-right: 5px;
+            opacity: 0.5;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                width: calc(100% - 60px);
+            }
+            
+            .icon-sidebar {
+                display: none;
+            }
+            
+            .topbar-nav {
+                gap: 5px;
+            }
+            
+            .topbar-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+            }
+        }
+
+        /* Sidebar Collapse/Expand */
+        .sidebar.collapsed {
+            width: 60px;
+            min-width: 60px;
+        }
+        
+        .sidebar.collapsed .nav-title {
+            display: none;
+        }
+        
+        .sidebar.collapsed .filter-item {
+            display: none;
+        }
+        
+        .app-container.sidebar-collapsed .main-content {
+            margin-left: 0;
+        }
+        
+        /* Transition for smooth sidebar collapse/expand */
+        .sidebar, .main-content {
+            transition: width 0.3s ease, margin-left 0.3s ease;
+        }
+
+        /* Main Content Elements */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .kb-title {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .kb-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #4caf50;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background-color: var(--button-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--hover-color);
+        }
+
+        .performance-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Dropdown/Select styling - Dark Theme */
+        select {
+            background-color: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 8px 12px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        /* These styles help with Firefox */
+        select:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 var(--text-color);
+        }
+        
+        /* Custom dropdown styling */
+        select option {
+            background-color: var(--card-color);
+            color: var(--text-color);
+            padding: 8px;
+        }
+        
+        /* For the calendar picker and related dropdowns */
+        input[type="date"], 
+        input[type="time"],
+        input[type="datetime-local"] {
+            background-color: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 8px 12px;
+        }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator,
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8);
+        }
+        
+        /* Custom dropdown menu styling */
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .custom-dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            min-width: 160px;
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .custom-dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: background-color 0.2s;
+        }
+        
+        .custom-dropdown-item:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .custom-dropdown-item.active {
+            background-color: rgba(100, 197, 255, 0.1);
+            color: var(--primary-color);
+        }
+
+        .article-title {
+            font-weight: normal;
+            color: var(--text-color);
+        }
+
+        /* Selected article row styling */
+        .article-row.selected {
+            background-color: rgba(100, 197, 255, 0.08);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .article-row.selected .article-title {
+            font-weight: 500;
+        }
+
+        /* Book sidebar styling */
+        .book-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.2s ease, background-color 0.2s ease;
+            border-radius: 4px;
+            margin: 0 8px 4px 8px;
+        }
+
+        .book-item:hover {
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .book-item.active {
+            color: var(--text-color);
+            font-weight: 500;
+            background-color: rgba(100, 197, 255, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .book-sidebar-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .book-icon-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .book-title-small {
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .book-item.active .book-icon-small,
+        .book-item.active .book-title-small {
+            color: var(--text-color);
+        }
+
+        .article-view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .article-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .article-view-content {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .article-metadata {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .article-content h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .article-content h2 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .article-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .article-content ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        
+        .article-content li {
+            margin-bottom: 8px;
+        }
+        
+        .article-feedback {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        
+        .article-feedback h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .feedback-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .feedback-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+        }
+        
+        .feedback-btn.active {
+            background-color: rgba(100, 197, 255, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .content-description {
+            margin-top: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* Article Editor Styles */
+        .article-editor-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            z-index: 1000;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+        }
+        
+        .editor-sidebar {
+            width: 60px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .editor-sidebar-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .editor-sidebar-icon:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
+        
+        .editor-sidebar-icon.active {
+            background-color: rgba(100, 197, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .editor-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 20px 40px;
+        }
+        
+        .editor-title-container {
+            margin-bottom: 20px;
+        }
+        
+        .editor-title-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .editor-title-input {
+            width: 100%;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 24px;
+            font-weight: 500;
+            padding: 5px 0;
+            outline: none;
+        }
+        
+        .editor-title-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .toolbar-button {
+            background-color: transparent;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .toolbar-button:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .toolbar-button.active {
+            background-color: rgba(100, 197, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .toolbar-separator {
+            width: 1px;
+            height: 24px;
+            background-color: var(--border-color);
+            margin: 0 5px;
+        }
+        
+        .editor-content {
+            flex: 1;
+            min-height: 300px;
+            padding-bottom: 40px;
+        }
+        
+        .editor-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .editor-settings {
+            width: 300px;
+            border-left: 1px solid var(--border-color);
+            background-color: var(--sidebar-bg);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .editor-settings-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .editor-settings-action {
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-close {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .action-close:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .action-save {
+            background-color: var(--button-blue);
+            color: white;
+            border: none;
+        }
+        
+        .action-save:hover {
+            opacity: 0.9;
+        }
+        
+        .editor-settings-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .editor-settings-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .editor-settings-tab:hover {
+            color: var(--text-color);
+        }
+        
+        .editor-settings-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .editor-settings-content {
+            padding: 20px;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+        }
+        
+        .settings-section-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .status-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .status-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .status-option.published {
+            background-color: rgba(80, 200, 120, 0.1);
+            color: var(--success-green);
+            border: 1px solid rgba(80, 200, 120, 0.3);
+        }
+        
+        .status-option.published.active {
+            background-color: rgba(80, 200, 120, 0.2);
+        }
+        
+        .status-option.draft {
+            background-color: rgba(255, 151, 68, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(255, 151, 68, 0.3);
+        }
+        
+        .status-option.draft.active {
+            background-color: rgba(255, 151, 68, 0.2);
+        }
+        
+        .topic-select-container {
+            margin-bottom: 20px;
+        }
+        
+        .topic-select-label {
+            font-size: 14px;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+        
+        .topic-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            background-color: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+        
+        .keywords-container {
+            margin-bottom: 20px;
+        }
+        
+        .keywords-label {
+            font-size: 14px;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+        
+        .keyword-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            background-color: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
+        
+        .keywords-help {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .generate-keywords-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .generate-keywords-btn:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .delete-article-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            color: #ff4444;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 30px;
+        }
+        
+        .delete-article-btn:hover {
+            background-color: rgba(255, 68, 68, 0.1);
+        }
+
+        .embedded-video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .embedded-video iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Hide editor by default */
+        .article-editor-container {
+            display: none;
+        }
+        
+        /* Show when active */
+        .article-editor-container.active {
+            display: flex;
+        }
+
+        .nav-item-bottom:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            height: 24px;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        /* Default state (collapsed) - arrow points right */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1e1e1e;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            max-width: 80%;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.3s;
+            pointer-events: none;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .notification-content {
+            margin-right: 15px;
+            flex-grow: 1;
+            font-size: 14px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            margin-left: 8px;
+            transition: color 0.2s;
+        }
+
+        .notification-close:hover {
+            color: white;
+        }
+
+        .notification .notification-actions {
+            display: flex;
+            margin-left: 15px;
+        }
+
+        .notification .notification-actions button {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 8px;
+            padding: 4px 10px;
+            transition: background-color 0.2s;
+        }
+
+        .notification .notification-actions button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .notification.success {
+            border-left: 4px solid #3cca7e;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .notification.info {
+            border-left: 4px solid #2196F3;
+        }
+
+        .notification.warning {
+            border-left: 4px solid #ff9800;
+        }
+
+        /* Custom notification system */
+        .kb-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1e1e1e;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            max-width: 80%;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.3s;
+            pointer-events: none;
+        }
+
+        .kb-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .kb-notification-content {
+            margin-right: 15px;
+            flex-grow: 1;
+            font-size: 14px;
+        }
+
+        .kb-notification-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            margin-left: 8px;
+            transition: color 0.2s;
+        }
+
+        .kb-notification-close:hover {
+            color: white;
+        }
+
+        .kb-notification.success {
+            border-left: 4px solid #3cca7e;
+        }
+
+        .kb-notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .kb-notification.info {
+            border-left: 4px solid #2196F3;
+        }
+
+        .kb-notification.warning {
+            border-left: 4px solid #ff9800;
+        }
+
+        /* Category Styling */
+        .category-row {
+            /* existing category row styles */
+        }
+
+        /* New Category Styles */
+        .category-row.pinned {
+            background-color: rgba(100, 197, 255, 0.05) !important;
+        }
+
+        .category-row.private .privacy-badge {
+            font-size: 12px;
+            padding: 2px 8px;
+            background-color: rgba(255, 151, 68, 0.1);
+            color: var(--accent-color);
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
+        .icon-select-btn {
+            transition: all 0.2s ease;
+        }
+
+        .icon-select-btn:hover {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        .icon-select-btn.active {
+            background-color: rgba(100, 197, 255, 0.1) !important;
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+        }
+
+        .category-modal input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .category-modal input[type="checkbox"]:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .category-modal input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .category-modal input[type="checkbox"]:hover {
+            border-color: var(--primary-color);
+        }
+
+        .category-modal textarea {
+            font-family: inherit;
+        }
+
+        .category-modal textarea:focus,
+        .category-modal input[type="text"]:focus,
+        .category-modal select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--card-color);
+            color: var(--text-color);
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1200;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            max-width: 350px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toast-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Category Tree Improvements */
+        .category-row .tree-actions {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .category-row:hover .tree-actions {
+            opacity: 1;
+        }
+
+        .category-row .action-button {
+            padding: 4px;
+            border-radius: 4px;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .category-row .action-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .tree-item {
+            position: relative;
+            padding: 6px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .tree-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .tree-item:hover .tree-actions {
+            opacity: 1 !important;
+        }
+
+        .expand-icon {
+            transition: transform 0.2s;
+        }
+
+        .expand-icon.open {
+            transform: rotate(90deg);
+        }
+
+        .tree-action-btn:hover {
+            color: var(--text-color) !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border-radius: 4px;
+        }
+
+        .category-row {
+            border-left: 3px solid transparent;
+        }
+
+        .category-row:hover {
+            border-left-color: var(--primary-color);
+        }
+
+        .nested-content {
+            margin-left: 24px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        [data-indent="0"] .tree-item { padding-left: 8px; }
+        [data-indent="1"] .tree-item { padding-left: 32px; }
+        [data-indent="2"] .tree-item { padding-left: 56px; }
+        [data-indent="3"] .tree-item { padding-left: 80px; }
+        [data-indent="4"] .tree-item { padding-left: 104px; }
+        
+        /* Performance stats and general utilities */
+        .performance-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-tag.published {
+            background-color: rgba(80, 200, 120, 0.2);
+            color: #50c878;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .empty-state p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        /* Drag Operation Feedback */
+        .drag-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            z-index: 1300;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            max-width: 350px;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .drag-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .drag-feedback .drag-icon {
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .drag-feedback .drag-message {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .drag-feedback .drag-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        /* History Controls (Undo/Redo) */
+        .history-controls {
+            display: flex;
+            gap: 4px;
+            margin-right: 12px;
+            padding-right: 12px;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .history-btn {
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .history-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .history-btn:not(:disabled):hover {
+            color: var(--text-color);
+            background-color: var(--hover-color);
+        }
+
+        /* Force file input button to match dark mode */
+        input[type="file"]::-webkit-file-upload-button {
+            background: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s, color 0.2s;
+        }
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: var(--button-blue);
+            color: #fff;
+        }
+        input[type="file"]::-ms-browse {
+            background: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="file"]::file-selector-button {
+            background: var(--card-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s, color 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background: var(--button-blue);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Icon Sidebar -->
+    <div class="icon-sidebar">
+        <div class="icon-sidebar-top">
+            <div class="brand-logo">
+                <img src="https://firebasestorage.googleapis.com/v0/b/kaywat-b4236.firebasestorage.app/o/KNOWLEDGE%20BASE%2Fimages%2FKNOWLEDGE-BASE%20-%20logo.png?alt=media&token=4a7dbb79-0e40-402b-8ace-fb15936de94d" alt="Knowledge Base Logo">
+            </div>
+            <a href="#" class="icon-link active" id="my-books-link" title="My Books">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+            </a>
+            <a href="#" class="icon-link" id="analytics-link" title="Analytics">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+            </a>
+            <a href="#" class="icon-link" id="admin-link" title="Admin">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </a>
+            <a href="#" class="icon-link" id="team-link" title="Team">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="icon-sidebar-bottom">
+            <div class="sidebar-divider"></div>
+            <a href="#" class="icon-link" title="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-container">
+    <header>
+        <div class="brand-header">
+            <div class="hamburger-menu">☰</div>
+        </div>
+        <div class="header-divider"></div>
+        <div class="search-container">
+                <div class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+            <input type="text" class="search-input" placeholder="Find an article...">
+        </div>
+        <div class="user-controls">
+            <div class="topbar-nav">
+                <div class="history-controls">
+                    <button class="topbar-icon history-btn" id="undo-btn" title="Undo" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 14L4 9l5-5"/>
+                            <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
+                        </svg>
+                    </button>
+                    <button class="topbar-icon history-btn" id="redo-btn" title="Redo" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 14l5-5-5-5"/>
+                            <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/>
+                        </svg>
+                    </button>
+                </div>
+                <a href="#" class="topbar-icon active" title="All" data-filter="all">All</a>
+                <a href="#" class="topbar-icon" title="Published" data-filter="published">Published</a>
+                <a href="#" class="topbar-icon" title="Draft" data-filter="draft">Draft</a>
+            </div>
+            <div class="notification-icon" title="Notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+            </div>
+            <div class="profile-icon" title="Profile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+        </div>
+        </div>
+    </header>
+
+    <div class="app-container">
+    <!-- Main Sidebar -->
+    <aside class="sidebar">
+            <div class="sidebar-content">
+        <div class="sidebar-nav">
+                    <div class="filters-heading">Filters</div>
+            <div class="filter-item active" data-filter="all-books">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span class="nav-title">All Books</span>
+                <span class="filter-count" style="margin-left: auto;">1</span>
+            </div>
+            <div class="filter-item" data-filter="work">
+                <span class="add-to-filter" title="Add books to this filter">+</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                <span class="nav-title">Work</span>
+                <span class="filter-count" style="margin-left: auto;">0</span>
+            </div>
+            <div class="filter-item" data-filter="personal">
+                <span class="add-to-filter" title="Add books to this filter">+</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span class="nav-title">Personal</span>
+                <span class="filter-count" style="margin-left: auto;">0</span>
+            </div>
+            <div class="filter-item" data-filter="social-media">
+                <span class="add-to-filter" title="Add books to this filter">+</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="nav-title">Social Media</span>
+                <span class="filter-count" style="margin-left: auto;">0</span>
+            </div>
+            <div class="filter-item" data-filter="developer">
+                <span class="add-to-filter" title="Add books to this filter">+</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="nav-title">Developer</span>
+                <span class="filter-count" style="margin-left: auto;">0</span>
+            </div>
+            <div class="filter-item" data-filter="getting-started">
+                <span class="add-to-filter" title="Add books to this filter">+</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="nav-title">Getting Started</span>
+                <span class="filter-count" style="margin-left: auto;">0</span>
+            </div>
+            <div class="filter-item filter-add" data-action="create-filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                <span class="nav-title">Create Filter</span>
+            </div>
+                    
+                    <div class="filters-heading" style="margin-top: 20px;">Books</div>
+                    <!-- Books will be created by users -->
+                    <div class="books-list">
+                        <!-- Books will be populated here by JavaScript -->
+                    </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+            <div class="workspace-wrapper">
+                <div class="workspace-select">
+                    <div class="selected-workspace">
+                        <span class="selected-workspace-name">My books</span>
+                    </div>
+                    <div class="workspace-status">
+                        <span class="status-dot"></span>
+                        <span>Live / Publicly available</span>
+            </div>
+            </div>
+        </div>
+
+            <div class="kb-url-wrapper">
+                <div class="url-container">
+                    <svg class="url-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="m7.272 13.783.561.07V11.5h-.5a.837.837 0 0 1-.833-.833v-.874l-.146-.147L5.207 8.5h4.126c.09 0 .167.076.167.167v2.5h1.167c.373 0 .68.237.79.58l.263.82.582-.636A5.805 5.805 0 0 0 13.833 8a5.836 5.836 0 0 0-3.645-5.403l-.688-.28v1.016a.837.837 0 0 1-.833.834H6.833V6c0 .09-.076.167-.166.167H4.833v1.959L3.16 6.453l-.642-.643-.2.887A5.91 5.91 0 0 0 2.168 8a5.826 5.826 0 0 0 5.105 5.783ZM1.833 8A6.17 6.17 0 0 1 8 1.833 6.17 6.17 0 0 1 14.167 8 6.17 6.17 0 0 1 8 14.167 6.17 6.17 0 0 1 1.833 8Z" fill="#0066FF" stroke="#0066FF"/>
+                    </svg>
+                    <span class="url-text" id="kb-current-url">article-link</span>
+                    <button aria-label="Copy Help Center Link" class="round-button" id="copy-url-button">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.667 1.5h-.5v9.333h-.334V2c0-.457.377-.833.834-.833h7.5V1.5h-7.5Zm1.84 3.167c0-.46.372-.834.826-.834h4.46L13.5 7.54V14a.837.837 0 0 1-.833.833h-7.34A.832.832 0 0 1 4.5 14l.007-9.333ZM4.833 14v.5h8.334v-7H9.833V4.167h-5V14Z" fill="#62626D" stroke="#62626D"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="toggle-container">
+                    <div class="switch-wrapper">
+                        <button type="button" role="switch" aria-checked="true" class="ant-switch ant-switch-checked">
+                            <div class="ant-switch-handle"></div>
+                        </button>
+                    </div>
+                </div>
+        </div>
+
+        <div class="search-actions">
+            <div>
+                    <input type="text" class="search-input" placeholder="Find an article">
+            </div>
+            <div class="actions">
+                <button type="button" class="btn btn-outline">Import</button>
+                <button type="button" class="btn btn-primary btn-add">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5l0 14"></path>
+                        <path d="M5 12l14 0"></path>
+                    </svg>
+                    Add new
+                </button>
+            </div>
+        </div>
+
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th style="width: 50%">Title</th>
+                    <th>Status</th>
+                    <th>Last updated</th>
+                    <th>Performance</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <!-- Hierarchy explanation:
+                         - Books are ONLY in the sidebar panel
+                         - In tree view: Categories > Folders > Articles/Files 
+                         - Books contain the tree view of categories
+                         - Each category can contain folders, articles or files
+                         - Folders can contain more folders, articles or files -->
+                    
+                    <!-- Empty table - content will be added by users -->
+            </tbody>
+        </table>
+    </main>
+    </div>
+</div>
+
+<!-- Article Editor Interface -->
+<div class="article-editor-container" id="articleEditor">
+    <!-- Left Sidebar -->
+    <div class="editor-sidebar">
+        <div class="editor-sidebar-icon active" title="Edit content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+        </div>
+        <div class="editor-sidebar-icon" title="Analytics">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18"></path>
+                <path d="M18 17V9"></path>
+                <path d="M13 17V5"></path>
+                <path d="M8 17v-3"></path>
+            </svg>
+        </div>
+        <div class="editor-sidebar-icon" title="Comments">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+        </div>
+        <div class="editor-sidebar-icon" title="Summarize" onclick="event.preventDefault(); event.stopPropagation(); showSummarizeModal(); return false;" style="cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+            </svg>
+        </div>
+        <div class="editor-sidebar-icon" title="Preview">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        </div>
+        
+        <!-- New SEO Editor Sidebar Icon -->
+        <div class="editor-sidebar-icon" title="SEO Tools" onclick="showSeoToolsPanel(); return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+        </div>
+    </div>
+    
+    <!-- Main Editor -->
+    <div class="editor-main">
+        <div class="editor-title-container">
+            <div class="editor-title-label">ARTICLE TITLE</div>
+            <input type="text" class="editor-title-input" id="articleTitleInput" placeholder="Enter article title..." value="See what KnowledgeBase can do for you">
+            <div class="editor-title-count" id="articleTitleCount">37 / 225</div>
+        </div>
+        
+        <div class="editor-toolbar">
+            <button type="button" class="toolbar-button" title="Bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                    <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                </svg>
+            </button>
+            <button type="button" class="toolbar-button" title="Italic">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="4" x2="10" y2="4"></line>
+                    <line x1="14" y1="20" x2="5" y2="20"></line>
+                    <line x1="15" y1="4" x2="9" y2="20"></line>
+                </svg>
+            </button>
+            <button type="button" class="toolbar-button" title="Underline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
+                    <line x1="4" y1="21" x2="20" y2="21"></line>
+                </svg>
+            </button>
+            <button type="button" class="toolbar-button" title="Strikethrough">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <path d="M16 6c-.5-2-2.5-3-4.5-3S7.5 4 7 6"></path>
+                    <path d="M8 18c.5 2 2.5 3 4.5 3s4-1 4.5-3"></path>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="Superscript">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m5 15 4-8 4 8"></path>
+                    <path d="M18 9h-2c0-2 2-2 2-4s-2-2-2-2"></path>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Subscript">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m5 15 4-8 4 8"></path>
+                    <path d="M18 19h-2c0-2 2-2 2-4s-2-2-2-2"></path>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="Code">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Text style">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                    <line x1="9" y1="20" x2="15" y2="20"></line>
+                    <line x1="12" y1="4" x2="12" y2="20"></line>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Color">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 11 3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="Insert link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Insert image">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Insert video">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                    <line x1="10" y1="8" x2="10" y2="16"></line>
+                    <line x1="14" y1="8" x2="14" y2="16"></line>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Insert PDF">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                    <path d="M9 9l1 0"></path>
+                    <path d="M9 13l6 0"></path>
+                    <path d="M9 17l6 0"></path>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Insert emoji">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="Insert table">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="3" y1="15" x2="21" y2="15"></line>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                    <line x1="15" y1="3" x2="15" y2="21"></line>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="Summarize" onclick="showSummarizeModal(); return false;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                    <line x1="17" y1="18" x2="3" y2="18"></line>
+                    <path d="M17 6h4"></path>
+                    <path d="M19 6v6"></path>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="Align left">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="17" y1="10" x2="3" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="17" y1="18" x2="3" y2="18"></line>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Align center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="10" x2="6" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="18" y1="18" x2="6" y2="18"></line>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="List">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+            </button>
+            <button class="toolbar-button" title="Numbered list">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="10" y1="6" x2="21" y2="6"></line>
+                    <line x1="10" y1="12" x2="21" y2="12"></line>
+                    <line x1="10" y1="18" x2="21" y2="18"></line>
+                    <path d="M4 6h1v4"></path>
+                    <path d="M4 10h2"></path>
+                    <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
+                </svg>
+            </button>
+            
+            <div class="toolbar-separator"></div>
+            
+            <button class="toolbar-button" title="More options">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="editor-content" contenteditable="true">
+            <p>Give your customers 24/7 self-service support and empower your team with easy access to frequently asked questions, product details, policies, onboarding materials, and more.</p>
+            <p>Watch this video to see what KnowledgeBase can do for you:</p>
+            <div class="embedded-video">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="What is KnowledgeBase" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Settings Panel -->
+    <div class="editor-settings">
+        <div class="editor-settings-header">
+            <button type="button" class="editor-settings-action action-close" id="closeEditor">Close</button>
+            <button type="button" class="editor-settings-action action-save">Save</button>
+        </div>
+        
+        <div class="editor-settings-tabs">
+            <div class="editor-settings-tab active">Settings</div>
+            <div class="editor-settings-tab">SEO</div>
+        </div>
+        
+        <div class="editor-settings-content">
+            <div class="settings-section">
+                <div class="settings-section-title">Status</div>
+                <div class="status-options">
+                    <div class="status-option published active">
+                        Published
+                    </div>
+                    <div class="status-option draft">
+                        Draft
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <div class="topic-select-container">
+                    <div class="topic-select-label">Show in topic</div>
+                    <select class="topic-select">
+                        <option selected>Getting started</option>
+                        <option>General</option>
+                        <option>FAQ</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <div class="keywords-container">
+                    <div class="keywords-label">Keywords:</div>
+                    <input type="text" class="keyword-input" placeholder="New Keyword">
+                    <div class="keywords-help">Add words or phrases that readers may use to search for this article.</div>
+                    <button class="generate-keywords-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                        </svg>
+                        Generate keywords
+                    </button>
+                </div>
+            </div>
+            
+            <button class="delete-article-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                Delete article
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Load the external JavaScript files -->
+<script src="js/bookFilters.js"></script>
+<script src="js/dragDropFilters.js"></script>
+<script src="js/dragDropTree.js"></script>
+<script src="js/historyManager.js"></script>
+<script src="js/setupEventListeners.js"></script>
+<script src="js/membershipPages.js"></script>
+<script src="js/jszip.min.js"></script>
+<script src="js/file-storage-system.js"></script>
+<script src="js/main.js"></script>
+<script src="js/previewViewer.js"></script>
+<script src="js/articleViewer.js"></script>
+<script src="js/verification-fix.js"></script>
+<script src="js/test-script.js"></script>
+<script src="js/upload-file-modal.js"></script>
+
+<!-- Summarize Options Modal -->
+<div id="summarizeModal" class="modal summarize-modal" style="display: none; visibility: hidden; opacity: 0;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Summarization Options</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="summarize-option" data-option="summary">
+                <div class="summarize-option-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="21" y1="6" x2="3" y2="6"></line>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                        <line x1="17" y1="18" x2="3" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="summarize-option-content">
+                    <h3>Automatic Summarization</h3>
+                    <p>Create a concise summary of the article</p>
+                </div>
+            </div>
+            
+            <div class="summarize-option" data-option="key-points">
+                <div class="summarize-option-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                </div>
+                <div class="summarize-option-content">
+                    <h3>Key Points</h3>
+                    <p>Extract the main points from the article</p>
+                </div>
+            </div>
+            
+            <div class="summarize-option" data-option="todo">
+                <div class="summarize-option-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="summarize-option-content">
+                    <h3>To-Do List</h3>
+                    <p>Generate actionable items from the content</p>
+                </div>
+            </div>
+            
+            <div class="summarize-option" data-option="transcribe">
+                <div class="summarize-option-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                </div>
+                <div class="summarize-option-content">
+                    <h3>Transcribe Audio/Video</h3>
+                    <p>Convert media to text and summarize</p>
+                </div>
+            </div>
+            
+            <div class="summarize-option" data-option="meeting">
+                <div class="summarize-option-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="summarize-option-content">
+                    <h3>Meeting Notes</h3>
+                    <p>Structure content as meeting minutes</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="api-toggle-container">
+                <label class="switch">
+                    <input type="checkbox" id="useApiToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Use ChatGPT API</span>
+            </div>
+            <div id="apiKeyMessage">To use ChatGPT API, add your API key in Settings</div>
+        </div>
+    </div>
+</div>
+</body>
+</html> 

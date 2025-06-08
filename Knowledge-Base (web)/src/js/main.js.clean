@@ -1,0 +1,188 @@
+// Knowledge Base Application
+// Main JavaScript File
+
+// Global variables
+let books = new Map();
+let categories = new Map();
+let articles = new Map();
+let files = new Map();
+let selectedBookId = null;
+let selectedItemId = null;
+let contentContainer = document.querySelector('.main-content');
+let contentTitle = document.querySelector('.selected-workspace-name');
+let historyManager;
+
+// Content needs to be loaded from localStorage or initialized with demo data
+document.addEventListener('DOMContentLoaded', init);
+
+// Initialize the application
+function init() {
+    console.log('Initializing Knowledge Base application...');
+    
+    // Initialize history manager for undo/redo functionality
+    historyManager = new HistoryManager();
+    
+    // Load data from localStorage or create demo data if none exists
+    loadStoredData();
+    
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Select the first book by default
+    if (books.size > 0) {
+        const firstBookId = Array.from(books.keys())[0];
+        selectBook(firstBookId);
+    }
+    
+    // Initialize the filter system
+    if (typeof initializeFilterSystem === 'function') {
+        initializeFilterSystem();
+    } else {
+        console.warn('Filter system initialization function not found');
+    }
+    
+    // Initialize tree drag and drop if available
+    if (typeof initializeTreeDragDrop === 'function') {
+        initializeTreeDragDrop();
+    } else {
+        console.warn('Tree drag and drop initialization function not found');
+    }
+    
+    // Initialize toolbar history controls
+    const undoBtn = document.getElementById('undo-btn');
+    const redoBtn = document.getElementById('redo-btn');
+    
+    if (undoBtn && redoBtn && historyManager) {
+        undoBtn.addEventListener('click', () => historyManager.undo());
+        redoBtn.addEventListener('click', () => historyManager.redo());
+        historyManager.updateButtonStates();
+    }
+    
+    // Set up profile event listeners
+    setupProfileEventListeners();
+}
+
+// Set up all event listeners
+function setupEventListeners() {
+    // Set up sidebar navigation
+    setupSidebarNavigation();
+    
+    // Set up context menu listeners
+    setupContextMenuListeners();
+    
+    // Set up search and button listeners
+    setupSearchAndButtonListeners();
+    
+    // Add event listeners to close dropdown menus when clicking outside
+    document.addEventListener('click', function(e) {
+        const dropdownMenus = document.querySelectorAll('.custom-dropdown-content');
+        dropdownMenus.forEach(menu => {
+            if (menu.style.display === 'block' && !e.target.closest('.custom-dropdown')) {
+                menu.style.display = 'none';
+            }
+        });
+    });
+    
+    // Set up URL copying functionality
+    const copyUrlButton = document.getElementById('copy-url-button');
+    if (copyUrlButton) {
+        copyUrlButton.addEventListener('click', function() {
+            const urlText = document.getElementById('kb-current-url').textContent;
+            navigator.clipboard.writeText(`https://kb.example.com/${urlText}`).then(() => {
+                showNotification('URL copied to clipboard', 'success');
+            }).catch(err => {
+                console.error('Failed to copy URL: ', err);
+                showNotification('Failed to copy URL', 'error');
+            });
+        });
+    }
+    
+    // Set up editor close button
+    const closeEditorBtn = document.getElementById('closeEditor');
+    if (closeEditorBtn) {
+        closeEditorBtn.addEventListener('click', function() {
+            const articleEditor = document.getElementById('articleEditor');
+            if (articleEditor) {
+                articleEditor.classList.remove('active');
+            }
+        });
+    }
+}
+
+// Set up sidebar navigation
+function setupSidebarNavigation() {
+    // Get sidebar icons
+    const myBooksLink = document.getElementById('my-books-link');
+    const analyticsLink = document.getElementById('analytics-link');
+    const adminLink = document.getElementById('admin-link');
+    const teamLink = document.getElementById('team-link');
+    
+    // Set up event listeners for sidebar navigation
+    if (myBooksLink) {
+        myBooksLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Reset active state
+            document.querySelectorAll('.icon-sidebar .icon-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Set this link as active
+            this.classList.add('active');
+            
+            // Show My Books page
+            showMyBooksPage();
+        });
+    }
+    
+    if (analyticsLink) {
+        analyticsLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Reset active state
+            document.querySelectorAll('.icon-sidebar .icon-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Set this link as active
+            this.classList.add('active');
+            
+            // Show Analytics page
+            showAnalyticsPage();
+        });
+    }
+    
+    if (adminLink) {
+        adminLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Reset active state
+            document.querySelectorAll('.icon-sidebar .icon-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Set this link as active
+            this.classList.add('active');
+            
+            // Show Admin page
+            showAdminPage();
+        });
+    }
+    
+    if (teamLink) {
+        teamLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Reset active state
+            document.querySelectorAll('.icon-sidebar .icon-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Set this link as active
+            this.classList.add('active');
+            
+            // Show Team page
+            showTeamPage();
+        });
+    }
+} 

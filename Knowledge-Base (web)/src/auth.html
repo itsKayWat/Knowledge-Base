@@ -1,0 +1,580 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base - Sign In</title>
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary-color: #64c5ff;
+            --primary-light: #8ad3ff;
+            --primary-dark: #28a2f5;
+            --accent-color: #ff9744;
+            --accent-hover: #e68a3d;
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #f1f1f1;
+            --text-secondary: #8d8d95;
+            --border-color: #383838;
+            --button-blue: #2563eb;
+            --success-green: #50c878;
+            --border-radius: 8px;
+            --transition-normal: 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 75%, #0f0f23 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .animated-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(100, 197, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 151, 68, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 40s linear infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .brand-logo-large {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(100, 197, 255, 0.3));
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 20px rgba(100, 197, 255, 0.3)); }
+            100% { filter: drop-shadow(0 0 30px rgba(100, 197, 255, 0.5)); }
+        }
+
+        .brand-logo-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .gradient-title {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #64c5ff 0%, #ff9744 50%, #8b5cf6 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(16px, 2.5vw, 20px);
+            color: rgba(241, 241, 241, 0.8);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-weight: 400;
+        }
+
+        .auth-actions {
+            margin-bottom: 60px;
+        }
+
+        .btn-large {
+            min-width: clamp(240px, 50vw, 280px);
+            padding: 16px 24px;
+            font-size: clamp(16px, 2vw, 18px);
+            font-weight: 600;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #2563eb 100%);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(100, 197, 255, 0.3);
+            margin: 0 10px 20px;
+            text-decoration: none;
+        }
+
+        .btn-large:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(100, 197, 255, 0.4);
+            background: linear-gradient(135deg, var(--primary-light) 0%, #3b82f6 100%);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(100, 197, 255, 0.5);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: rgba(100, 197, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .btn-ghost {
+            background: none;
+            border: none;
+            color: rgba(241, 241, 241, 0.7);
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 12px 20px;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text-color);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(100, 197, 255, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(100, 197, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: rgba(241, 241, 241, 0.7);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 0;
+            }
+            
+            .auth-container {
+                padding: 20px 16px;
+            }
+            
+            .brand-logo-large {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+            }
+            
+            .gradient-title {
+                font-size: 32px;
+                margin-bottom: 16px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+            
+            .auth-actions {
+                margin-bottom: 40px;
+            }
+            
+            .btn-large {
+                min-width: 90%;
+                max-width: 320px;
+                padding: 16px 20px;
+                font-size: 16px;
+                display: block;
+                margin: 0 auto 16px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-top: 30px;
+            }
+            
+            .feature-card {
+                padding: 20px 16px;
+            }
+            
+            .feature-icon {
+                width: 48px;
+                height: 48px;
+                margin-bottom: 16px;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1e1e1e;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            max-width: 80%;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.3s;
+            pointer-events: none;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .notification.success {
+            border-left: 4px solid #3cca7e;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .notification.info {
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-background">
+        <div class="grid-overlay"></div>
+    </div>
+    
+    <div class="auth-container">
+        <div class="brand-logo-large">
+            <img src="https://firebasestorage.googleapis.com/v0/b/kaywat-b4236.firebasestorage.app/o/KNOWLEDGE%20BASE%2Fimages%2FKNOWLEDGE-BASE%20-%20logo.png?alt=media&token=4a7dbb79-0e40-402b-8ace-fb15936de94d" alt="Knowledge Base Logo">
+        </div>
+        <h1 class="gradient-title">Transform Your Knowledge</h1>
+        <p class="hero-subtitle">Build, organize, and share your expertise with the world's most intuitive knowledge management platform.</p>
+        
+        <div class="auth-actions">
+            <a href="#" class="btn-large" onclick="showSignupModal(); return false;">
+                <span>Create Free Account</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+            <br>
+            <a href="#" class="btn-large btn-outline" onclick="showLoginModal(); return false;">Sign In</a>
+            <br>
+            <button class="btn-ghost" onclick="continueAsGuest()">Continue as Guest</button>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <h3>Smart Collections</h3>
+                <p>Organize content with intelligent categorization and tagging</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <h3>Instant Search</h3>
+                <p>Find any piece of information in seconds with powerful search</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <h3>Enterprise Security</h3>
+                <p>Keep your knowledge safe with advanced security features</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication functions
+        function showSignupModal() {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            modal.style.zIndex = '10000';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            
+            modal.innerHTML = `
+                <div style="background-color: var(--card-color); border-radius: 12px; width: 450px; max-width: 90%; padding: 30px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                        <h2 style="margin: 0; font-size: 24px; font-weight: 600;">Create Account</h2>
+                        <button onclick="this.closest('.modal').remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);">&times;</button>
+                    </div>
+                    <form id="signupForm">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Full Name</label>
+                            <input type="text" id="signupName" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.05); color: var(--text-color);">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email</label>
+                            <input type="email" id="signupEmail" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.05); color: var(--text-color);">
+                        </div>
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Password</label>
+                            <input type="password" id="signupPassword" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.05); color: var(--text-color);">
+                        </div>
+                        <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary-color), #2563eb); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">Create Account</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 20px; color: var(--text-secondary);">
+                        Already have an account? <a href="#" onclick="this.closest('.modal').remove(); showLoginModal();" style="color: var(--primary-color); text-decoration: none;">Sign In</a>
+                    </p>
+                </div>
+            `;
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+            
+            document.getElementById('signupForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('signupName').value;
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                
+                if (name && email && password) {
+                    createSession(name, email);
+                    modal.remove();
+                }
+            });
+        }
+
+        function showLoginModal() {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            modal.style.zIndex = '10000';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            
+            modal.innerHTML = `
+                <div style="background-color: var(--card-color); border-radius: 12px; width: 450px; max-width: 90%; padding: 30px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                        <h2 style="margin: 0; font-size: 24px; font-weight: 600;">Sign In</h2>
+                        <button onclick="this.closest('.modal').remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-secondary);">&times;</button>
+                    </div>
+                    <form id="loginForm">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email</label>
+                            <input type="email" id="loginEmail" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.05); color: var(--text-color);">
+                        </div>
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Password</label>
+                            <input type="password" id="loginPassword" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: rgba(255, 255, 255, 0.05); color: var(--text-color);">
+                        </div>
+                        <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(135deg, var(--primary-color), #2563eb); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">Sign In</button>
+                    </form>
+                    <p style="text-align: center; margin-top: 20px; color: var(--text-secondary);">
+                        Don't have an account? <a href="#" onclick="this.closest('.modal').remove(); showSignupModal();" style="color: var(--primary-color); text-decoration: none;">Create Account</a>
+                    </p>
+                </div>
+            `;
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+            
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (email && password) {
+                    createSession(email.split('@')[0], email);
+                    modal.remove();
+                }
+            });
+        }
+
+        function continueAsGuest() {
+            localStorage.setItem('kb_skip_login_gate', 'true');
+            showNotification('Welcome! You are using Knowledge Base as a guest.', 'info');
+            setTimeout(() => {
+                window.location.href = './index.html';
+            }, 1500);
+        }
+
+        function createSession(name, email) {
+            const user = {
+                id: 'user-' + Date.now(),
+                email: email,
+                name: name,
+                loggedIn: true,
+                loginTime: new Date().toISOString()
+            };
+            
+            localStorage.setItem('kb_current_user', JSON.stringify(user));
+            localStorage.removeItem('kb_skip_login_gate');
+            
+            showNotification(`Welcome, ${name}!`, 'success');
+            setTimeout(() => {
+                window.location.href = './index.html';
+            }, 1500);
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Check if user is already authenticated
+        window.addEventListener('load', function() {
+            const user = JSON.parse(localStorage.getItem('kb_current_user') || 'null');
+            const skipGate = localStorage.getItem('kb_skip_login_gate');
+            
+            if ((user && user.loggedIn) || skipGate) {
+                window.location.href = './index.html';
+            }
+        });
+    </script>
+</body>
+</html>

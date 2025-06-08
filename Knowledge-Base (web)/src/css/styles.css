@@ -1,0 +1,39 @@
+/* SEO Tools Panel Styles */
+.seo-tools-panel {
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.seo-tools-panel h3 {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.seo-tools-panel h4 {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.seo-tools-panel input:focus,
+.seo-tools-panel textarea:focus {
+    outline: none;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.seo-tools-panel .keyword-tag {
+    transition: all 0.2s ease;
+}
+
+.seo-tools-panel .keyword-tag:hover {
+    background-color: rgba(100, 197, 255, 0.2);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+} 
